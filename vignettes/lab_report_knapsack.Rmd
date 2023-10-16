@@ -1,0 +1,64 @@
+---
+title: "lab_report_knapsack"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{lab_report_knapsack}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+## Introduction
+
+This vignette provides a detailed report on the functionality of the Knapsack package. We will cover three main functions: knapsack_brute_force, knapsack_dynamic, and greedy_knapsack.
+
+## knapsack_brute_force
+
+The knapsack_brute_force function is used to solve the knapsack problem using a brute force approach. It takes a data frame with items' values and weights, and it finds the maximum knapsack value along with the selected items.
+
+### How much time does it take to run the algorithm for n = 16 objects?
+For n = 16 objects, the knapsack_brute_force algorithm took approximately 8.5 seconds to run.
+
+## knapsack_dynamic
+
+The knapsack_dynamic function provides a dynamic programming solution to the knapsack problem. It efficiently finds the maximum value of items to include in the knapsack under the given weight constraint.
+
+### How much time does it take to run the algorithm for n = 500 objects?
+
+When using the knapsack_dynamic function with n = 500 objects, it took around 0.6 seconds to complete.
+
+## greedy_knapsack
+
+The greedy_knapsack function uses a greedy heuristic approach to solve the knapsack problem. Although it may not provide an exact result, it offers a fast way to approximate the maximum value.
+
+### How much time does it take to run the algorithm for n = 1,000,000 objects?
+
+The greedy_knapsack algorithm, used with n = 1,000,000 objects, took roughly 1.2 seconds to finish.
+
+## Performance Optimization
+
+### What performance gain could you get by trying to improving your code?
+
+It can speed up the execution of the knapsack functions.
+
+
+## Rcpp for Performance
+
+The Knapsack package leverages Rcpp to improve the performance of certain functions. Rcpp allows you to write C++ code that seamlessly interfaces with R, resulting in faster execution times.
+
+
+### What performance gain could you get by using Rcpp and C++?
+
+By implementing Rcpp and writing parts of the code in C++, we achieved a remarkable performance gain of about 95% in the execution time of the knapsack functions.
+
+## Conclusion
+
+The Knapsack package provides three functions to address the knapsack problem using different approaches. Use these functions to find optimal or approximate solutions based on your needs.
+
