@@ -29,7 +29,9 @@ greedy_knapsack <- function(x, W) {
   if (!is.data.frame(x) || !all(c("v", "w") %in% colnames(x))) {
     stop("Input 'x' must be a data.frame with 'v' and 'w' variables.")
   }
-  
+  if (W <= 0) {
+    stop("Knapsack size 'W' must be a positive value.")
+  }
   # Check if 'v' and 'w' have only positive values
   if (any(x$v <= 0) || any(x$w <= 0)) {
     stop("Both 'v' and 'w' must have only positive values.")
@@ -58,7 +60,7 @@ greedy_knapsack <- function(x, W) {
   }
   
   # Ensure max_value is an integer without decimal places
-  max_value <- as.integer(max_value)
+  max_value <- round(max_value)
   
   # Return the result as a list
   result <- list(value = max_value, elements = best_elements)

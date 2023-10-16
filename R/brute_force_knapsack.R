@@ -23,13 +23,15 @@
 #' }
 #'
 #' @export
-#' 
-knapsack_brute_force <- function(x, W) {
+#' @import Rcpp
+brute_force_knapsack <- function(x, W) {
   # Check if x is a data.frame with 'v' and 'w' variables
   if (!is.data.frame(x) || !all(c("v", "w") %in% colnames(x))) {
     stop("Input 'x' must be a data.frame with 'v' and 'w' variables.")
   }
-  
+  if (W <= 0) {
+    stop("Knapsack size 'W' must be a positive value.")
+  }
   # Check if 'v' and 'w' have only positive values
   if (any(x$v <= 0) || any(x$w <= 0)) {
     stop("Both 'v' and 'w' must have only positive values.")
@@ -53,7 +55,7 @@ knapsack_brute_force <- function(x, W) {
     
     # Check if the combination is valid and maximizes value
     if (total_weight <= W && total_value > max_value) {
-      max_value <- as.integer(total_value)
+      max_value <- round(total_value)
       best_elements <- which(binary_representation == 1)
     }
   }

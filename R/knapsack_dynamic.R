@@ -25,7 +25,9 @@
 knapsack_dynamic <- function(x, W) {
   n <- nrow(x)  # Number of items in the subset
   dp <- matrix(0, 2, W + 1)  # Create a 2-row rolling array
-  
+  if (W <= 0) {
+    stop("Knapsack size 'W' must be a positive value.")
+  }
   for (i in 1:n) {
     for (w in 0:W) {
       row1 <- i %% 2 + 1  # Use a rolling array to reduce memory usage
