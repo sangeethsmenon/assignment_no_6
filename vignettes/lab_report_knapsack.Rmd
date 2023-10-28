@@ -208,7 +208,7 @@ knapsack_brute_force_R <- function(W, weights, values) {
 }
 
 # Function to execute the Rcpp implementation
-sourceCpp("C:/Users/sange/OneDrive/Documents/knapsack/src/knapsack.cpp")  # Assuming the C++ code is in 'knapsack.cpp'
+sourceCpp("../src/knapsack.cpp")  # Assuming the C++ code is in 'knapsack.cpp'
 
 knapsack_brute_force_Rcpp <- function(W, weights, values) {
   knapsack_brute_force(W, weights, values, TRUE)
