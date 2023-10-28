@@ -13,8 +13,9 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-
+```{r setup}
+library(knapsack)
+```
 ## Introduction
 
 This vignette provides a detailed report on the functionality of the Knapsack package. We will cover three main functions: knapsack_brute_force, knapsack_dynamic, and greedy_knapsack.
@@ -24,41 +25,223 @@ This vignette provides a detailed report on the functionality of the Knapsack pa
 The knapsack_brute_force function is used to solve the knapsack problem using a brute force approach. It takes a data frame with items' values and weights, and it finds the maximum knapsack value along with the selected items.
 
 ### How much time does it take to run the algorithm for n = 16 objects?
-For n = 16 objects, the knapsack_brute_force algorithm took approximately 8.5 seconds to run.
+
+```{r}
+# Define the number of objects
+n <- 16
+
+# Set the random number generator version and seed
+RNGversion(min(as.character(getRversion()), "3.5.3"))
+set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
+
+# Generate data for 16 objects
+knapsack_objects <- data.frame(
+  w = sample(1:100, size = n, replace = TRUE),  # Adjust the weight range as needed
+  v = runif(n, 0, 1000)  # Adjust the value range as needed
+)
+
+# Measure the time taken for the algorithm
+timing <- system.time({
+  result <- brute_force_knapsack(knapsack_objects, W = 200)  # Adjust the knapsack size (W) as needed
+})
+
+# Output the result along with the time taken
+cat("For n = 16 objects:\n")
+cat("Maximum Value:", result$value, "\n")
+cat("Selected Elements:", result$elements, "\n")
+cat("Time taken:", timing[["elapsed"]], "seconds\n")
+```
 
 ## knapsack_dynamic
 
 The knapsack_dynamic function provides a dynamic programming solution to the knapsack problem. It efficiently finds the maximum value of items to include in the knapsack under the given weight constraint.
 
-### How much time does it take to run the algorithm for n = 500 objects?
+### How much time does it takes to run the algorithm for n = 500 objects?
 
-When using the knapsack_dynamic function with n = 500 objects, it took around 0.6 seconds to complete.
+```{r}
+# Define the number of objects
+n <- 500
+
+# Set the random number generator version and seed
+RNGversion(min(as.character(getRversion()), "3.5.3"))
+set.seed(42, kind="Mersenne-Twister", normal.kind="Inversion")
+
+# Generate data for 500 objects
+knapsack_objects <- data.frame(
+  w=sample(1:100, size=n, replace=TRUE),  # Adjust the weight range as needed
+  v=runif(n, 0, 1000)  # Adjust the value range as needed
+)
+
+# Measure the time taken for the algorithm
+timing_dynamic <- system.time({
+  result_dynamic <- knapsack_dynamic(knapsack_objects, W=200)  # Adjust the knapsack size (W) as needed
+})
+
+# Output the result along with the time taken
+cat("For n = 500 objects:\n")
+cat("Maximum Value:", result_dynamic$max_value, "\n")
+cat("Selected Items:", result_dynamic$selected_items, "\n")
+cat("Time taken:", timing_dynamic[["elapsed"]], "seconds\n")
+```
 
 ## greedy_knapsack
 
 The greedy_knapsack function uses a greedy heuristic approach to solve the knapsack problem. Although it may not provide an exact result, it offers a fast way to approximate the maximum value.
 
-### How much time does it take to run the algorithm for n = 1,000,000 objects?
+### How much time does it takes to run the algorithm for n = 1000000 objects?
 
-The greedy_knapsack algorithm, used with n = 1,000,000 objects, took roughly 1.2 seconds to finish.
+```{r}
+# Define the number of objects
+n <- 1000000
+
+# Set the random number generator version and seed
+RNGversion(min(as.character(getRversion()), "3.5.3"))
+set.seed(42, kind="Mersenne-Twister", normal.kind="Inversion")
+
+# Generate data for 1,000,000 objects
+knapsack_objects <- data.frame(
+  w=sample(1:100, size=n, replace=TRUE),  # Adjust the weight range as needed
+  v=runif(n, 0, 1000)  # Adjust the value range as needed
+)
+
+# Measure the time taken for the algorithm
+timing_greedy <- system.time({
+  result_greedy <- greedy_knapsack(knapsack_objects, W=200)  # Adjust the knapsack size (W) as needed
+})
+
+# Output the result along with the time taken
+cat("For n = 1,000,000 objects:\n")
+cat("Maximum Value:", result_greedy$value, "\n")
+cat("Selected Elements:", result_greedy$elements, "\n")
+cat("Time taken:", timing_greedy[["elapsed"]], "seconds\n")
+```
 
 ## Performance Optimization
 
+
+
 ### What performance gain could you get by trying to improving your code?
 
-It can speed up the execution of the knapsack functions.
+### Profiling the Brute Force Knapsack Function
 
+```{r}
+library(profvis)
 
-## Rcpp for Performance
+# Profile the brute_force_knapsack function for n = 16 objects
+# Define n and generate data for 16 objects
+n <- 16
 
-The Knapsack package leverages Rcpp to improve the performance of certain functions. Rcpp allows you to write C++ code that seamlessly interfaces with R, resulting in faster execution times.
+# Set the random number generator version and seed
+RNGversion(min(as.character(getRversion()), "3.5.3"))
+set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
 
+# Generate data for 16 objects
+knapsack_objects <- data.frame(
+  w = sample(1:100, size = n, replace = TRUE),  # Adjust the weight range as needed
+  v = runif(n, 0, 1000)  # Adjust the value range as needed
+)
+
+# Profile the brute_force_knapsack function for n = 16 objects
+profvis({
+  result_brute_force <- brute_force_knapsack(knapsack_objects, W = 200)  # Adjust the knapsack size (W) as needed
+})
+```
+
+### Profiling the Dynamic Knapsack Function
+
+```{r}
+library(profvis)
+
+# Profile the knapsack_dynamic function for n = 500 objects
+# Define n and generate data for 500 objects
+n <- 500
+
+# Set the random number generator version and seed
+RNGversion(min(as.character(getRversion()), "3.5.3"))
+set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
+
+# Generate data for 500 objects
+knapsack_objects <- data.frame(
+  w = sample(1:100, size = n, replace = TRUE),  # Adjust the weight range as needed
+  v = runif(n, 0, 1000)  # Adjust the value range as needed
+)
+
+# Profile the knapsack_dynamic function for n = 500 objects
+profvis({
+  result_dynamic <- knapsack_dynamic(knapsack_objects, W = 200)  # Adjust the knapsack size (W) as needed
+})
+```
+
+### Profiling the Greedy Knapsack Function
+
+```{r}
+library(profvis)
+
+# Profile the greedy_knapsack function for n = 1,000,000 objects
+# Define n and generate data for 1,000,000 objects
+n <- 1000000
+
+# Set the random number generator version and seed
+RNGversion(min(as.character(getRversion()), "3.5.3"))
+set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
+
+# Generate data for 1,000,000 objects
+knapsack_objects <- data.frame(
+  w = sample(1:100, size = n, replace = TRUE),  # Adjust the weight range as needed
+  v = runif(n, 0, 1000)  # Adjust the value range as needed
+)
+
+# Profile the greedy_knapsack function for n = 1,000,000 objects
+profvis({
+  result_greedy <- greedy_knapsack(knapsack_objects, W = 200)  # Adjust the knapsack size (W) as needed
+})
+```
 
 ### What performance gain could you get by using Rcpp and C++?
 
-By implementing Rcpp and writing parts of the code in C++, we achieved a remarkable performance gain of about 95% in the execution time of the knapsack functions.
+```{r}
+library(microbenchmark)
+library(Rcpp)
+# Function to execute the R implementation
+knapsack_brute_force_R <- function(W, weights, values) {
+  # ... (existing R code)
+}
+
+# Function to execute the Rcpp implementation
+sourceCpp("C:/Users/sange/OneDrive/Documents/knapsack/src/knapsack.cpp")  # Assuming the C++ code is in 'knapsack.cpp'
+
+knapsack_brute_force_Rcpp <- function(W, weights, values) {
+  knapsack_brute_force(W, weights, values, TRUE)
+}
+
+# Define different 'n' values for the number of items
+n_values <- c(16, 500, 1000)  # Use appropriate values for benchmarking
+
+results <- lapply(n_values, function(n) {
+  # Generate data for the given 'n' value
+  weights <- runif(n, 1, 100)
+  values <- runif(n, 1, 1000)
+  W <- 200  # Adjust the knapsack size as needed
+  
+  # Execute R version and Rcpp version and capture execution times
+  timings <- microbenchmark(
+    R_version = knapsack_brute_force_R(W, weights, values),
+    Rcpp_version = knapsack_brute_force_Rcpp(W, weights, values),
+    times = 100  # Number of iterations to measure performance
+  )
+  return(timings)
+})
+```
+
+```{r}
+for (i in 1:length(results)) {
+  print(paste("For n =", n_values[i]))
+  print(summary(results[[i]]))
+}
+```
 
 ## Conclusion
 
 The Knapsack package provides three functions to address the knapsack problem using different approaches. Use these functions to find optimal or approximate solutions based on your needs.
+
 
